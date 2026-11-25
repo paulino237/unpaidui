@@ -43,7 +43,7 @@ pnpm start
 
 ## Community & Author
 
-Crafted by **[MIGUEL FOSSO](https://github.com/paulino237)** & the open-source community.
+Crafted by **[MIGUEL FOSSO](https://fosso.onixe.app)** & the open-source community.
 
 ## License
 
