@@ -1,0 +1,21 @@
+{
+  "name": "UnpaidUI",
+  "short_name": "UnpaidUI",
+  "description": "Open-source premium landing page templates made free. Built with Next.js and fully customized shadcn/ui.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f2",
+  "theme_color": "#f7f6f2",
+  "icons": [
+    {
+      "src": "/media/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/media/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

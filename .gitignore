@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+.next/
+.vercel
+*.log
+# showcase videos stay local
+www/showcase/**/*.mp4
+www/showcase/videos/
+# pro templates live in their own repository
+/pro/
