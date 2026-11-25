@@ -1,7 +1,11 @@
-# UnpaidUI
+<div align="center">
+  <img src="showcase/logo.png" width="220" alt="UnpaidUI Logo" />
+  <h1>UnpaidUI</h1>
+  <p><strong>Open-source premium landing page templates made 100% free for everyone.</strong></p>
+  <p>High-converting, production-ready landing page templates engineered with Next.js, Tailwind CSS, and modern UI libraries.</p>
+</div>
 
-Open-source premium landing page templates made 100% free for everyone.
-High-converting, production-ready landing page templates engineered with Next.js, Tailwind CSS, and modern UI libraries.
+<br />
 
 ## Templates Collection
 
