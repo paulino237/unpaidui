@@ -22,6 +22,7 @@
 | <a href="unpaidui/ostra"><img src="showcase/ostra.jpg" width="320" alt="Ostra" /></a> | **[Ostra](unpaidui/ostra)** | High-end photography studio — editorial grid & centered title | `Next.js` `Tailwind` |
 | <a href="unpaidui/imageworks"><img src="showcase/imageworks.jpg" width="320" alt="ImageWorks" /></a> | **[ImageWorks](unpaidui/imageworks)** | Creative visual production studio with 3D image helix carousel | `Next.js` `Tailwind` |
 | <a href="unpaidui/kora"><img src="showcase/kora.jpg" width="320" alt="Kora" /></a> | **[Kora](unpaidui/kora)** | Growth consulting and advisory landing page with editorial layout | `Next.js` `Tailwind` |
+| <a href="unpaidui/aldena"><img src="showcase/aldena.jpg" width="320" alt="Aldena Studio" /></a> | **[Aldena Studio](unpaidui/aldena)** | Dark editorial creative agency — full-bleed photography hero & bold Swiss typography | `Next.js` `Tailwind` |
 
 ## Run locally
 
