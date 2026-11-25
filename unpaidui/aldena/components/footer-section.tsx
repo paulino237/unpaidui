@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ParticleHeading } from "./particle-heading";
 
 const NAV_LINKS = [
-  { name: "Home", href: "#hero" },
+  { name: "Home", href: "#" },
   { name: "About", href: "#about" },
   { name: "Works", href: "#works" },
   { name: "Contact", href: "#contact" },
@@ -54,10 +53,10 @@ export function FooterSection() {
   };
 
   return (
-    <footer className="relative z-[3] w-full bg-[#f4f4f4] text-black">
-      <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-20 px-8 pt-24 pb-0 sm:gap-28 sm:px-14 sm:pt-28 lg:px-16">
-        {/* Top Two-Column Grid */}
-        <div className="flex w-full flex-col justify-between gap-16 md:flex-row md:items-start lg:gap-24">
+    <footer className="relative z-[3] w-full bg-[#f4f4f4] text-black overflow-hidden">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-col px-8 pt-24 pb-0 sm:px-14 sm:pt-28 lg:px-16">
+        {/* Top Content Row: Left Form, Middle Dot, Right Links & Contact */}
+        <div className="relative flex w-full flex-col justify-between gap-16 md:flex-row md:items-start lg:gap-20">
           {/* Left Column: Stay in the loop */}
           <div className="flex w-full max-w-[420px] flex-col">
             <h3 className="font-sans text-[34px] font-bold tracking-[-0.04em] leading-[1.1] text-black sm:text-[42px]">
@@ -86,7 +85,7 @@ export function FooterSection() {
             </form>
 
             {/* Copyright */}
-            <div className="mt-6">
+            <div className="mt-8">
               <a
                 href="https://lunisdesign.com"
                 target="_blank"
@@ -96,6 +95,11 @@ export function FooterSection() {
                 DESIGNED BY LUNIS. ALL RIGHTS RESERVED.
               </a>
             </div>
+          </div>
+
+          {/* Center Black Dot: Positioned exactly in the middle between columns */}
+          <div className="hidden md:flex flex-1 items-center justify-center self-center py-8">
+            <div className="h-3.5 w-3.5 rounded-full bg-black" />
           </div>
 
           {/* Right Column: Navigation, Social & Inquiries */}
@@ -137,11 +141,11 @@ export function FooterSection() {
                 href="tel:2125550198"
                 className="font-sans text-[16px] font-medium tracking-tight text-[#605f5f] transition-colors hover:text-black"
               >
-                +1 (212) 555-0198
+                +1 (212) 555–0198
               </a>
               <a
                 href="mailto:hello@aldena.studio"
-                className="font-sans text-[30px] font-bold tracking-[-0.04em] leading-[1.15] text-black transition-opacity hover:opacity-75 sm:text-[36px]"
+                className="font-sans text-[30px] font-bold tracking-[-0.04em] leading-[1.15] text-black transition-opacity hover:opacity-75 sm:text-[38px]"
               >
                 hello@aldena.studio
               </a>
@@ -149,16 +153,11 @@ export function FooterSection() {
           </div>
         </div>
 
-        {/* Bottom Giant Brand Wordmark: "Aldena Studio" */}
-        <div className="w-full select-none pt-4">
-          <ParticleHeading
-            text="Aldena Studio"
-            color="#dedede"
-            aspectRatio="6.63"
-            fontSize="clamp(3rem, 14.2vw, 13.5rem)"
-            as="div"
-            className="w-full aspect-[6.63]"
-          />
+        {/* Bottom Giant Brand Wordmark: "Aldena. Studio" */}
+        <div className="relative mt-12 w-full select-none overflow-hidden text-center pb-0">
+          <h2 className="font-serif text-[clamp(4.5rem,14.8vw,14rem)] font-normal tracking-[-0.04em] text-[#dedede] leading-[0.82] whitespace-nowrap select-none">
+            Aldena. Studio
+          </h2>
         </div>
       </div>
     </footer>

@@ -97,22 +97,22 @@ export function BottomFloatingMenu() {
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle navigation menu"
-        className="flex h-[38px] w-[58px] cursor-pointer items-center justify-center border border-white/20 bg-black/80 backdrop-blur-md transition-colors hover:border-white/50"
+        className="flex h-[36px] w-[46px] cursor-pointer items-center justify-center rounded-[3px] border border-white/25 bg-[#3a3a3a] shadow-md transition-colors hover:border-white/50"
       >
-        <div className="flex h-3.5 w-4.5 flex-col justify-between">
+        <div className="flex h-3 w-4 flex-col justify-between">
           <span
-            className={`block h-px w-full bg-white transition-transform duration-300 ${
-              isOpen ? "translate-y-[6px] rotate-45" : ""
+            className={`block h-[1.5px] w-full bg-white transition-transform duration-300 ${
+              isOpen ? "translate-y-[5px] rotate-45" : ""
             }`}
           />
           <span
-            className={`block h-px w-full bg-white transition-opacity duration-300 ${
+            className={`block h-[1.5px] w-full bg-white transition-opacity duration-300 ${
               isOpen ? "opacity-0" : ""
             }`}
           />
           <span
-            className={`block h-px w-full bg-white transition-transform duration-300 ${
-              isOpen ? "-translate-y-[6px] -rotate-45" : ""
+            className={`block h-[1.5px] w-full bg-white transition-transform duration-300 ${
+              isOpen ? "-translate-y-[5px] -rotate-45" : ""
             }`}
           />
         </div>
