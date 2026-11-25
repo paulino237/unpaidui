@@ -1,5 +1,7 @@
 <div align="center">
-  <img src="showcase/logo.png" width="220" alt="UnpaidUI Logo" />
+  <img src="showcase/og-image.jpg" width="100%" alt="UnpaidUI — Stop Paying for Templates. Start Shipping." />
+  <br /><br />
+  <img src="showcase/logo.png" width="180" alt="UnpaidUI Logo" />
   <h1>UnpaidUI</h1>
   <p><strong>Open-source premium landing page templates made 100% free for everyone.</strong></p>
   <p>High-converting, production-ready landing page templates engineered with Next.js, Tailwind CSS, and modern UI libraries.</p>
