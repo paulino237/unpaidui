@@ -25,6 +25,7 @@
 | <a href="unpaidui/sentinel"><img src="showcase/sentinel.jpg" width="320" alt="Sentinel" /></a> | **[Sentinel](unpaidui/sentinel)** | Enterprise AI security platform — dark UI, live threat activity metrics & customer grid | `Next.js` `Tailwind` |
 | <a href="unpaidui/turnout"><img src="showcase/turnout.jpg" width="320" alt="Turnout" /></a> | **[Turnout](unpaidui/turnout)** | Experiential & events studio — editorial design, interactive pricing ticker & case studies | `Next.js` `Tailwind` |
 | <a href="unpaidui/inlay"><img src="showcase/inlay.jpg" width="320" alt="Inlay" /></a> | **[Inlay](unpaidui/inlay)** | Personal creator page & link-in-bio storefront — gallery wall layout, Inlay Pay & tiles | `Next.js` `Tailwind` |
+| <a href="unpaidui/kilowatt"><img src="showcase/kilowatt.jpg" width="320" alt="Kilowatt" /></a> | **[Kilowatt](unpaidui/kilowatt)** | Smart home energy management & tariff automation — 24h interactive solar scrubber & isometric grid | `Next.js` `Tailwind` |
 
 ## Run locally
 
