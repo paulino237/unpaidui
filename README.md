@@ -26,6 +26,7 @@
 | <a href="unpaidui/turnout"><img src="showcase/turnout.jpg" width="320" alt="Turnout" /></a> | **[Turnout](unpaidui/turnout)** | Experiential & events studio — editorial design, interactive pricing ticker & case studies | `Next.js` `Tailwind` |
 | <a href="unpaidui/inlay"><img src="showcase/inlay.jpg" width="320" alt="Inlay" /></a> | **[Inlay](unpaidui/inlay)** | Personal creator page & link-in-bio storefront — gallery wall layout, Inlay Pay & tiles | `Next.js` `Tailwind` |
 | <a href="unpaidui/kilowatt"><img src="showcase/kilowatt.jpg" width="320" alt="Kilowatt" /></a> | **[Kilowatt](unpaidui/kilowatt)** | Smart home energy management & tariff automation — 24h interactive solar scrubber & isometric grid | `Next.js` `Tailwind` |
+| <a href="unpaidui/hairlineui"><img src="showcase/hairlineui.jpg" width="320" alt="Hairline UI" /></a> | **[Hairline UI](unpaidui/hairlineui)** | Design engineer UI component library — 16 live interactive micro-widgets, 3D hero carousel & redesign slider | `Next.js` `Tailwind` `Motion` |
 
 ## Run locally
 
