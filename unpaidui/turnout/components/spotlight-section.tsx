@@ -161,50 +161,24 @@ export function SpotlightSection() {
                 />
               ))}
               <span className="showcase-metric">
-                <span className="tm">
-                  <span className="sr-only">{current.metric}</span>
-                  <span aria-hidden="true" className="tm-w">
-                    <span className="tm-g">{current.metric}</span>
-                  </span>
-                </span>
+                {current.metric}
               </span>
             </figure>
 
             <div className="showcase-copy">
               <h3 className="h2 showcase-title">
-                <span className="tm">
-                  <span className="sr-only">{current.title}</span>
-                  <span aria-hidden="true" className="tm-w">
-                    <span className="tm-g">{current.title}</span>
-                  </span>
-                </span>
+                {current.title}
               </h3>
 
               <dl className="showcase-results">
                 <div className="showcase-result">
-                  <dt className="sr-only">{current.stat1Label}</dt>
-                  <dd className="showcase-result-figure">
-                    <span className="nr">
-                      <span className="sr-only">{current.stat1Num}</span>
-                      <span aria-hidden="true" className="nr-v">
-                        <span className="nr-p">{current.stat1Num}</span>
-                      </span>
-                    </span>
-                  </dd>
-                  <dd className="showcase-result-label">{current.stat1Label}</dd>
+                  <dd className="showcase-result-figure">{current.stat1Num}</dd>
+                  <dt className="showcase-result-label">{current.stat1Label}</dt>
                 </div>
 
                 <div className="showcase-result">
-                  <dt className="sr-only">{current.stat2Label}</dt>
-                  <dd className="showcase-result-figure">
-                    <span className="nr">
-                      <span className="sr-only">{current.stat2Num}</span>
-                      <span aria-hidden="true" className="nr-v">
-                        <span className="nr-p">{current.stat2Num}</span>
-                      </span>
-                    </span>
-                  </dd>
-                  <dd className="showcase-result-label">{current.stat2Label}</dd>
+                  <dd className="showcase-result-figure">{current.stat2Num}</dd>
+                  <dt className="showcase-result-label">{current.stat2Label}</dt>
                 </div>
               </dl>
 
