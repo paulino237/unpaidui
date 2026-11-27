@@ -1,8 +1,60 @@
+"use client";
+
+import { useSyncExternalStore } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
+import { AsciiCanvas } from "./ascii-canvas";
 
 export function CtaBanner() {
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
+
+  const f =
+    "linear-gradient(to right, transparent 0%, black 13%, black 27%, transparent 43%, transparent 57%, black 73%, black 87%, transparent 100%)";
+  const m =
+    "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)";
+
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden [isolation:isolate]">
+      {mounted && (
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+          <div className="mx-auto h-full max-w-[1440px]">
+            <motion.div
+              className="h-full w-full"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                maskImage: m,
+                WebkitMaskImage: m,
+                filter: "brightness(1.3)",
+              }}
+            >
+              <div
+                className="h-full w-full"
+                style={{
+                  maskImage: f,
+                  WebkitMaskImage: f,
+                }}
+              >
+                <AsciiCanvas
+                  color="#ffffff"
+                  intensity={0}
+                  elementSize={12}
+                  videoUrl="/sample-video-2.mp4"
+                  noiseScale={25}
+                  hasCursorInteraction={false}
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      )}
+
       <div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-1/2 -z-[1] h-[130%] w-[70%] -translate-x-1/2 -translate-y-1/2"

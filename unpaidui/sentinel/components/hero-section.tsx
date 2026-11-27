@@ -23,21 +23,30 @@ export function HeroSection() {
   const [activeRange, setActiveRange] = useState<"24h" | "7d" | "30d">("24h");
 
   return (
-    <div className="relative overflow-hidden">
-      <section className="relative overflow-hidden">
-        <HeroWaves />
+    <div className="relative [isolation:isolate]">
+      <HeroWaves />
 
+      <section className="relative overflow-hidden">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 -z-10"
           style={{
             background:
-              "radial-gradient(60% 50% at 50% -5%, color-mix(in srgb, var(--foreground) 8%, transparent), transparent 70%)",
+              "radial-gradient(60% 50% at 50% -5%, color-mix(in srgb, var(--foreground) 5%, transparent), transparent 70%)",
           }}
         />
 
         <div className="relative z-10 mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-10">
           <div className="relative mx-auto flex max-w-2xl flex-col items-center pb-12 pt-32 text-center sm:pt-40">
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-1/2 -z-[1] h-[150%] w-[160%] -translate-x-1/2 -translate-y-1/2"
+              style={{
+                background:
+                  "radial-gradient(ellipse at center, var(--background) 0%, color-mix(in srgb, var(--background) 78%, transparent) 45%, transparent 72%)",
+              }}
+            />
+
             <h1 className="text-balance font-serif text-4xl font-normal leading-[1.1] tracking-[-0.01em] sm:text-5xl lg:text-[3.5rem]">
               Secure your Enterprise Stack{" "}
               <span className="font-sans font-medium tracking-tight">at AI Speed</span>
