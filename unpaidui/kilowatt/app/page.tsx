@@ -16,7 +16,10 @@ import { Footer } from "@/components/footer";
 export default function Home() {
   return (
     <MotionProvider>
-      <div className="min-h-screen">
+      <a className="skip-link" href="#main">
+        Skip to content
+      </a>
+      <div className="frame">
         <Header />
         <main id="main">
           <HeroSection />

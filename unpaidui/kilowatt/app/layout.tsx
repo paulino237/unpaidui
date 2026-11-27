@@ -37,16 +37,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-motion="on"
       className="space_grotesk_bd733379-module__iqkQUq__variable rethink_sans_e397e536-module__gCn4iW__variable"
       suppressHydrationWarning
     >
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){try{document.documentElement.dataset.motion=window.matchMedia("(prefers-reduced-motion: reduce)").matches?"off":"on"}catch(e){}})();`,
-          }}
-        />
-      </head>
       <body>{children}</body>
     </html>
   );
