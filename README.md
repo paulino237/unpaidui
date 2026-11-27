@@ -21,6 +21,8 @@
 | <a href="unpaidui/kora"><img src="showcase/kora.jpg" width="320" alt="Kora" /></a> | **[Kora](unpaidui/kora)** | Growth consulting and advisory landing page with editorial layout | `Next.js` `Tailwind` |
 | <a href="unpaidui/aldena"><img src="showcase/aldena.jpg" width="320" alt="Aldena Studio" /></a> | **[Aldena Studio](unpaidui/aldena)** | Dark editorial creative agency — full-bleed photography hero & bold Swiss typography | `Next.js` `Tailwind` |
 | <a href="unpaidui/arclight"><img src="showcase/arclight.jpg" width="320" alt="Arclight" /></a> | **[Arclight](unpaidui/arclight)** | Team communication SaaS — dark mode, in-app UI preview & social proof logos | `Next.js` `Tailwind` |
+| <a href="unpaidui/circular"><img src="showcase/circular.jpg" width="320" alt="Circular" /></a> | **[Circular](unpaidui/circular)** | Modern SaaS platform — 3D landscape backdrop, floating navigation & analytics dashboard | `Next.js` `Tailwind` |
+| <a href="unpaidui/sentinel"><img src="showcase/sentinel.jpg" width="320" alt="Sentinel" /></a> | **[Sentinel](unpaidui/sentinel)** | Enterprise AI security platform — dark UI, live threat activity metrics & customer grid | `Next.js` `Tailwind` |
 
 ## Run locally
 
