@@ -1,0 +1,2 @@
+//# allFunctionsCalledOnLoad
+import{Et as e,S as t,et as n,q as r,ut as i}from"#entry";import{t as a}from"./DU0G4Ljy.js";var o=Object.assign(n({__name:`Content`,props:{propClass:{default:``},propData:{}},setup(n){let o=t.Screen.get(`M`);return(t,s)=>(i(),r(a,{propLifeless:e(o),propClass:`content ${n.propClass}`,propText:n.propData.content??``},null,8,[`propLifeless`,`propClass`,`propText`]))}}),{__name:`TemplateContent`});export{o as t};

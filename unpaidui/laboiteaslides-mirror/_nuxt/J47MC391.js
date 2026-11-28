@@ -1,0 +1,2 @@
+//# allFunctionsCalledOnLoad
+import{At as e,Dt as t,Et as n,G as r,Y as i,et as a,p as o,ut as s}from"#entry";var c=Object.assign(o(a({__name:`Avatar`,props:{propClass:{default:``},propName:{}},setup(a){let o=a,c=r(l);function l(){let e=o.propName,t=e.indexOf(` `);return e?~t?e[0]+(e[t+1]??``):e[0]:`A`}return(r,o)=>(s(),i(`app-avatar`,{class:t(`${r.$style.avatar} ${a.propClass}`),role:`presentation`,"aria-hidden":`true`},e(n(c)),3))}}),[[`__cssModules`,{$style:{avatar:`_avatar_1hvgv_59`}}]]),{__name:`UIUtilAvatar`});export{c as t};

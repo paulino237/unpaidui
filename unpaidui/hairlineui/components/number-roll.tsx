@@ -1,280 +1,231 @@
+// Hairline UI · number-roll · MIT License
+// Copyright (c) 2026 Hairline UI · https://hairlineui.com/license#components
+
 "use client";
 
-import React, {
-  useState,
-  useRef,
-  useCallback,
-  useMemo,
-  useEffect,
-  useLayoutEffect,
-  useSyncExternalStore,
-} from "react";
+import * as React from "react";
 
-const DIGITS_TAPE = Array.from({ length: 50 }, (_, i) => i % 10).join("\n");
-const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
+/* ─────────────────────────────────────────────────────────
+ * NUMBER ROLL: numbers that change like an odometer
+ *
+ *   rolling   each digit is a column that rolls to its new
+ *             value, in the direction the number moved: going
+ *             up, a 9 rolls on to 0 instead of spinning back
+ *   places    new places slide open from nothing; lost ones
+ *             fold away
+ *   format    anything Intl.NumberFormat does: currency,
+ *             percent, compact ("1.2K"), decimals
+ *
+ * The real number is always there as text for screen readers
+ * and copy and paste; the columns are only what you see.
+ * ───────────────────────────────────────────────────────── */
 
-const subscribeMotion = (callback: () => void) => {
-  if (typeof window === "undefined") return () => {};
-  const media = window.matchMedia(REDUCED_QUERY);
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
-};
-
-interface DigitProps {
-  digit: number;
-  trend: number;
-  duration: number;
-  reduced: boolean;
-  rollIn: boolean;
+export interface NumberRollProps extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  value: number;
+  /** Intl.NumberFormat options, e.g. { style: "currency", currency: "USD" }. */
+  format?: Intl.NumberFormatOptions;
+  /** Format in this locale everywhere. Without it, a server render and hydration use en-US and the visitor's locale takes over after mount. */
+  locales?: string | string[];
+  prefix?: string;
+  suffix?: string;
+  /** Start from this value and roll to `value` once mounted, e.g. 0 for stats. */
+  from?: number;
+  /** Roll duration in ms. */
+  duration?: number;
+  /** Always roll this way, e.g. "down" for a countdown's seconds, which wrap from 00 to 59. Defaults to the way the number moved. */
+  direction?: "up" | "down";
 }
 
-const Digit = React.memo(function Digit({
-  digit,
-  trend,
-  duration,
-  reduced,
-  rollIn,
-}: DigitProps) {
-  const [initialPos] = useState(() => 20 + (rollIn ? 0 : digit));
-  const currentPos = useRef(initialPos);
-  const spanRef = useRef<HTMLSpanElement>(null);
+type Column = { key: string; char: string; digit: number | null };
 
-  const applyTransform = useCallback(
+const EASE = "cubic-bezier(0.16,1,0.3,1)";
+const SETS = 5; // the strip repeats 0–9 five times so a roll never runs out of digits
+const MIDDLE = 20;
+/** The strip as one text node, a digit a line: fifty lines, but one element to lay out instead of fifty. */
+const STRIP = Array.from({ length: SETS * 10 }, (_, i) => i % 10).join("\n");
+
+const reducedQuery = "(prefers-reduced-motion: reduce)";
+const subscribeReduced = (onChange: () => void) => {
+  const query = window.matchMedia(reducedQuery);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+const useReducedMotion = () =>
+  React.useSyncExternalStore(subscribeReduced, () => window.matchMedia(reducedQuery).matches, () => false);
+
+// Without `locales`, the server and the visitor's browser can format the same number differently ("$29" in Node,
+// "US$29" in an en-GB browser) and hydration would fail. So the server render and the hydrating render share one
+// fixed locale, and the visitor's own takes over straight after; a client-only mount uses the visitor's from the start.
+const HYDRATION_LOCALE = "en-US";
+const subscribeNothing = () => () => {};
+const useHydrated = () =>
+  React.useSyncExternalStore(subscribeNothing, () => true, () => false);
+
+/** Digits are keyed by their place counted from the right, so the units column stays the units column. */
+function columns(text: string): Column[] {
+  const chars = [...text];
+  const seen = new Map<string, number>();
+  let place = 0;
+  const out: Column[] = [];
+  for (let i = chars.length - 1; i >= 0; i--) {
+    const char = chars[i];
+    if (/\d/.test(char)) out.push({ key: `d${place++}`, char, digit: Number(char) });
+    else {
+      // Symbols are keyed by how many of the same symbol sit to their right, so a comma that shifts is the same comma.
+      const n = seen.get(char) ?? 0;
+      seen.set(char, n + 1);
+      out.push({ key: `s${char}${n}`, char, digit: null });
+    }
+  }
+  return out.reverse();
+}
+
+// Memoised: a parent that re-renders with the same number doesn't rebuild the strips.
+const Digit = React.memo(function Digit({ digit, trend, duration, reduced, rollIn }: { digit: number; trend: number; duration: number; reduced: boolean; rollIn: boolean }) {
+  // Where the strip starts: a digit that arrives after the first paint rolls in from 0. The strip's position from then on
+  // lives in a ref and goes straight to the element, so a roll never re-renders and React never undoes the rebase below.
+  const [start] = React.useState(() => MIDDLE + (rollIn ? 0 : digit));
+  const posRef = React.useRef(start);
+  const stripRef = React.useRef<HTMLSpanElement>(null);
+
+  const place = React.useCallback(
     (pos: number, animate: boolean) => {
-      const el = spanRef.current;
-      if (!el) return;
-      el.style.transition = animate
-        ? `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1)`
-        : "none";
-      el.style.transform = `translateY(${(-100 * pos) / 50}%)`;
+      const strip = stripRef.current;
+      if (!strip) return;
+      strip.style.transition = animate ? `transform ${duration}ms ${EASE}` : "none";
+      strip.style.transform = `translateY(${(-pos * 100) / (SETS * 10)}%)`;
     },
-    [duration]
+    [duration],
   );
 
-  useLayoutEffect(() => {
-    const cur = currentPos.current;
-    const curDigit = ((cur % 10) + 10) % 10;
-    if (curDigit === digit) return;
-
+  React.useLayoutEffect(() => {
+    const current = posRef.current;
+    const showing = ((current % 10) + 10) % 10;
+    if (showing === digit) return;
     if (reduced) {
-      currentPos.current = 20 + digit;
-      applyTransform(currentPos.current, false);
+      posRef.current = MIDDLE + digit;
+      place(posRef.current, false);
       return;
     }
-
-    let next =
-      trend > 0 || (trend === 0 && digit > curDigit)
-        ? cur + ((digit - curDigit + 10) % 10)
-        : cur - ((curDigit - digit + 10) % 10);
-
-    if (next < 10 || next > 39) {
-      const offset = 10 * Math.round((next - 20) / 10);
-      const el = spanRef.current;
-      if (el?.offsetHeight) {
-        let actual = cur;
+    const up = trend > 0 || (trend === 0 && digit > showing);
+    let target = up ? current + ((digit - showing + 10) % 10) : current - ((showing - digit + 10) % 10);
+    // Values arriving faster than a roll (a progress percent) never let it re-centre, so before it runs off the strip,
+    // jump the strip back by whole sets mid-roll (it looks identical) and roll on from there.
+    if (target < 10 || target > SETS * 10 - 11) {
+      const shift = Math.round((target - MIDDLE) / 10) * 10;
+      const strip = stripRef.current;
+      if (strip?.offsetHeight) {
+        let visual = current;
         try {
-          actual =
-            -new DOMMatrixReadOnly(getComputedStyle(el).transform).m42 /
-            (el.offsetHeight / 50);
+          visual = -new DOMMatrixReadOnly(getComputedStyle(strip).transform).m42 / (strip.offsetHeight / (SETS * 10));
         } catch {}
-        el.style.transition = "none";
-        el.style.transform = `translateY(${(-100 * (actual - offset)) / 50}%)`;
-        void el.offsetHeight; // force reflow
+        strip.style.transition = "none";
+        strip.style.transform = `translateY(${(-(visual - shift) * 100) / (SETS * 10)}%)`;
+        void strip.offsetHeight;
       }
-      next -= offset;
+      target -= shift;
     }
+    posRef.current = target;
+    place(target, true);
+  }, [digit, trend, reduced, place]);
 
-    currentPos.current = next;
-    applyTransform(next, true);
-  }, [digit, trend, reduced, applyTransform]);
+  // After a roll, quietly re-centre on the middle set so the next roll always has room.
+  const settle = () => {
+    posRef.current = MIDDLE + (((posRef.current % 10) + 10) % 10);
+    place(posRef.current, false);
+  };
 
   return (
     <span className="relative inline-block [clip-path:inset(0)]">
       <span className="invisible">{digit}</span>
       <span
-        ref={spanRef}
+        ref={stripRef}
         aria-hidden="true"
-        onTransitionEnd={() => {
-          currentPos.current = 20 + (((currentPos.current % 10) + 10) % 10);
-          applyTransform(currentPos.current, false);
-        }}
+        onTransitionEnd={settle}
         className="absolute inset-x-0 top-0 block whitespace-pre text-center"
-        style={{ transform: `translateY(${(-100 * initialPos) / 50}%)` }}
+        style={{ transform: `translateY(${(-start * 100) / (SETS * 10)}%)` }}
       >
-        {DIGITS_TAPE}
+        {STRIP}
       </span>
     </span>
   );
 });
 
-function ColEnter({
-  enter,
-  children,
-}: {
-  enter: boolean;
-  children: React.ReactNode;
-}) {
-  const [shouldAnimate] = useState(enter);
+/** A place that appeared after the first paint slides open; places that were there from the start just sit. */
+function Place({ enter, children }: { enter: boolean; children: React.ReactNode }) {
+  const [entering] = React.useState(enter);
   return (
-    <span
-      className={`inline-block ${
-        shouldAnimate
-          ? "[clip-path:inset(0)] animate-[ui-col-in_500ms_cubic-bezier(0.16,1,0.3,1)_both]"
-          : ""
-      }`}
-    >
+    <span className={`inline-block ${entering ? "[clip-path:inset(0)] animate-[ui-col-in_500ms_cubic-bezier(0.16,1,0.3,1)_both]" : ""}`}>
       {children}
     </span>
   );
 }
 
-const emptySet = new Set<string>();
+const NOTHING_NEW: ReadonlySet<string> = new Set();
 
-export interface NumberRollProps extends React.HTMLAttributes<HTMLSpanElement> {
-  value: number;
-  format?: Intl.NumberFormatOptions;
-  locales?: string;
-  prefix?: string;
-  suffix?: string;
-  from?: number;
-  duration?: number;
-  direction?: "up" | "down";
-  className?: string;
-}
+export function NumberRoll({ value, format, locales, prefix = "", suffix = "", from, duration = 900, direction, className = "", ...props }: NumberRollProps) {
+  const reduced = useReducedMotion();
+  const [shown, setShown] = React.useState(from ?? value);
 
-export function NumberRoll({
-  value,
-  format,
-  locales,
-  prefix = "",
-  suffix = "",
-  from,
-  duration = 900,
-  direction,
-  className = "",
-  ...rest
-}: NumberRollProps) {
-  const isReduced = useSyncExternalStore(
-    subscribeMotion,
-    () => (typeof window !== "undefined" ? window.matchMedia(REDUCED_QUERY).matches : false),
-    () => false
-  );
-
-  const [displayValue, setDisplayValue] = useState(from ?? value);
-
-  useEffect(() => {
-    const handle = requestAnimationFrame(() => setDisplayValue(value));
-    return () => cancelAnimationFrame(handle);
+  // Roll from `from` to the real value once on screen (a frame later, so the start is painted).
+  React.useEffect(() => {
+    const frame = requestAnimationFrame(() => setShown(value));
+    return () => cancelAnimationFrame(frame);
   }, [value]);
 
-  const activeLocale = locales ?? (typeof window !== "undefined" ? undefined : "en-US");
-  const localeKey = String(activeLocale);
+  const hydrated = useHydrated();
+  const locale = locales ?? (hydrated ? undefined : HYDRATION_LOCALE);
+  const localeKey = String(locale);
+  const formatter = React.useMemo(() => new Intl.NumberFormat(locale, format), [localeKey, format && JSON.stringify(format)]); // eslint-disable-line react-hooks/exhaustive-deps
+  const text = `${prefix}${formatter.format(shown)}${suffix}`;
+  const cols = React.useMemo(() => columns(text), [text]);
 
-  const formatter = useMemo(
-    () => new Intl.NumberFormat(activeLocale, format),
-    [activeLocale, format, localeKey]
-  );
-
-  const formattedText = `${prefix}${formatter.format(displayValue)}${suffix}`;
-
-  const columns = useMemo(() => {
-    const chars = [...formattedText];
-    const seenChars = new Map<string, number>();
-    let digitIdx = 0;
-    const res: Array<{ key: string; char: string; digit: number | null }> = [];
-
-    for (let i = chars.length - 1; i >= 0; i--) {
-      const c = chars[i];
-      if (/\d/.test(c)) {
-        res.push({ key: `d${digitIdx++}`, char: c, digit: Number(c) });
-      } else {
-        const count = seenChars.get(c) ?? 0;
-        seenChars.set(c, count + 1);
-        res.push({ key: `s${c}${count}`, char: c, digit: null });
-      }
-    }
-    return res.reverse();
-  }, [formattedText]);
-
-  const [state, setState] = useState({
-    text: formattedText,
-    cols: columns,
-    shown: displayValue,
-    localeKey,
-    snap: false,
-    moved: 0,
-    entering: emptySet,
-    leaving: [] as typeof columns,
-  });
-
-  let curState = state;
-  if (
-    state.text !== formattedText ||
-    state.shown !== displayValue ||
-    state.localeKey !== localeKey
-  ) {
-    const prevKeys = new Set(state.cols.map((c) => c.key));
-    const nextKeys = new Set(columns.map((c) => c.key));
-    const isLocaleOnly = state.localeKey !== localeKey && state.shown === displayValue;
-
-    curState = {
-      text: formattedText,
-      cols: columns,
-      shown: displayValue,
+  // What changed since the last number: places that are new (they slide open and roll in from 0), places that are gone
+  // (they fold away) and which way it moved. Worked out while rendering, from the last columns kept in state.
+  // A change of locale (the visitor's taking over after hydration) isn't a change of number, so it swaps in place.
+  const [last, setLast] = React.useState({ text, cols, shown, localeKey, snap: false, moved: 0, entering: NOTHING_NEW, leaving: [] as Column[] });
+  let view = last;
+  if (last.text !== text || last.shown !== shown || last.localeKey !== localeKey) {
+    const before = new Set(last.cols.map((c) => c.key));
+    const after = new Set(cols.map((c) => c.key));
+    const snap = last.localeKey !== localeKey && last.shown === shown;
+    view = {
+      text,
+      cols,
+      shown,
       localeKey,
-      snap: isLocaleOnly,
-      moved: Math.sign(displayValue - state.shown),
-      entering: isLocaleOnly
-        ? emptySet
-        : new Set(columns.filter((c) => !prevKeys.has(c.key)).map((c) => c.key)),
-      leaving:
-        isReduced || isLocaleOnly
-          ? []
-          : state.cols.filter((c) => !nextKeys.has(c.key)),
+      snap,
+      moved: Math.sign(shown - last.shown),
+      entering: snap ? NOTHING_NEW : new Set(cols.filter((c) => !before.has(c.key)).map((c) => c.key)),
+      leaving: reduced || snap ? [] : last.cols.filter((c) => !after.has(c.key)),
     };
-    setState(curState);
+    setLast(view);
   }
+  const still = reduced || view.snap;
+  const trend = direction === "up" ? 1 : direction === "down" ? -1 : view.moved;
 
-  const snapOrReduced = isReduced || curState.snap;
-  const trend =
-    direction === "up" ? 1 : direction === "down" ? -1 : curState.moved;
-
-  useEffect(() => {
-    if (!state.leaving.length) return;
-    const timer = window.setTimeout(() => {
-      setState((prev) => ({ ...prev, leaving: [] }));
-    }, 420);
+  // Lost places are drawn folding away for as long as the fold takes.
+  React.useEffect(() => {
+    if (!last.leaving.length) return;
+    const timer = window.setTimeout(() => setLast((l) => ({ ...l, leaving: [] })), 420);
     return () => window.clearTimeout(timer);
-  }, [state.leaving]);
+  }, [last.leaving]);
 
   return (
-    <span className={`inline-flex tabular-nums ${className}`} {...rest}>
+    <span className={`inline-flex tabular-nums ${className}`} {...props}>
       <span className="sr-only">{`${prefix}${formatter.format(value)}${suffix}`}</span>
       <span aria-hidden="true" className="inline-flex items-baseline whitespace-pre">
-        {curState.leaving.map((col) => (
-          <span
-            key={`out-${col.key}`}
-            className="inline-block [clip-path:inset(0)] animate-[ui-col-out_400ms_cubic-bezier(0.16,1,0.3,1)_forwards]"
-          >
-            {col.char}
+        {view.leaving.map((c) => (
+          <span key={`out-${c.key}`} className="inline-block [clip-path:inset(0)] animate-[ui-col-out_400ms_cubic-bezier(0.16,1,0.3,1)_forwards]">
+            {c.char}
           </span>
         ))}
-        {columns.map((col) => {
-          const isEntering = curState.entering.has(col.key);
+        {cols.map((c) => {
+          const isNew = view.entering.has(c.key);
           return (
-            <ColEnter key={col.key} enter={isEntering && !snapOrReduced}>
-              {col.digit === null ? (
-                col.char
-              ) : (
-                <Digit
-                  digit={col.digit}
-                  trend={trend}
-                  duration={duration}
-                  reduced={snapOrReduced}
-                  rollIn={isEntering}
-                />
-              )}
-            </ColEnter>
+            <Place key={c.key} enter={isNew && !still}>
+              {c.digit === null ? c.char : <Digit digit={c.digit} trend={trend} duration={duration} reduced={still} rollIn={isNew} />}
+            </Place>
           );
         })}
       </span>

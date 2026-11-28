@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "FKScreamer";
+  src: url("/fonts/FKScreamerLegacy-Upright.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --drk1: #120042;
+  --lgh1: #ffffff;
+  --prm1: #6630ff;
+  --scd1: #01daf6;
+  --scd2: #ff61f8;
+  --scd3: #62f740;
+  --gry1: #cecece;
+  --gry2: #aca6bd;
+  --gry3: #5f5f5f;
+  
+  --background: var(--drk1);
+  --foreground: var(--lgh1);
+}
+
+@theme inline {
+  --color-drk1: var(--drk1);
+  --color-lgh1: var(--lgh1);
+  --color-prm1: var(--prm1);
+  --color-scd1: var(--scd1);
+  --color-scd2: var(--scd2);
+  --color-scd3: var(--scd3);
+  --color-gry1: var(--gry1);
+  --color-gry2: var(--gry2);
+  --color-gry3: var(--gry3);
+  
+  --font-screamer: "FKScreamer", sans-serif;
+  --font-inter: "Inter", sans-serif;
+}
+
+html, body {
+  background-color: var(--drk1);
+  color: var(--lgh1);
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Glassmorphism utility */
+.superGlass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.superGlass-dark {
+  background: rgba(18, 0, 66, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Custom marquee keyframes */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--drk1);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--prm1);
+}

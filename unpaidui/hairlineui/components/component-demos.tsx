@@ -1,29 +1,35 @@
 "use client";
 
+import { VoiceBar } from "@/components/voice-bar";
+import { TaskCard, type TaskList } from "@/components/task-card";
+import { Afterglow, type AfterglowHandle } from "@/components/afterglow";
+import { Snowfall } from "@/components/snowfall";
+import { ActivityRings, type RingDay, type RingGoal } from "@/components/activity-rings";
+import { Storage, type StorageKind } from "@/components/storage";
+import { CookieConsent } from "@/components/cookie-consent";
+
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import {
   Check,
   Lock,
   Unlock,
   Sparkles,
-  Send,
   ShoppingBag,
   TrendingUp,
   ArrowUpRight,
-  Footprints,
   Flame,
   Mic,
   MicOff,
   Zap,
   SlidersHorizontal,
   Plus,
-  Trash2,
   HardDrive,
-  Activity,
   ArrowUp,
   ListChecks,
   Brain,
-  ShieldAlert,
+  Paperclip,
+  RotateCcw,
+  Cookie,
 } from "lucide-react";
 import { NumberRoll } from "@/components/number-roll";
 import { TextMorph } from "@/components/text-morph";
@@ -33,7 +39,7 @@ import { TextMorph } from "@/components/text-morph";
 // -------------------------------------------------------------
 export function MorphingChartDemo() {
   const [tab, setTab] = useState<"Revenue" | "Visitors">("Revenue");
-  const [shape, setShape] = useState<"area" | "spline" | "line">("area");
+  const [shape, setShape] = useState<"area" | "spline">("area");
 
   const revenueData = [35, 52, 44, 68, 59, 82, 75, 96, 88, 110, 104, 128];
   const visitorsData = [12, 19, 15, 27, 24, 38, 32, 45, 41, 56, 50, 64];
@@ -51,7 +57,6 @@ export function MorphingChartDemo() {
     return { x, y, val };
   });
 
-  // Generate smooth cubic bezier SVG curve
   const curveD = useMemo(() => {
     if (points.length < 2) return "";
     let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
@@ -71,7 +76,6 @@ export function MorphingChartDemo() {
 
   return (
     <div className="flex w-full max-w-[620px] flex-col rounded-2xl bg-surface p-4 sm:p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.06)]">
-      {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
@@ -85,7 +89,6 @@ export function MorphingChartDemo() {
           </p>
         </div>
 
-        {/* Controls */}
         <div className="flex items-center gap-2">
           <div className="flex rounded-full bg-surface-3 p-0.5 shadow-[inset_0_0_0_1px_rgb(var(--edge-rgb)/0.05)]">
             <button
@@ -125,7 +128,6 @@ export function MorphingChartDemo() {
         </div>
       </div>
 
-      {/* SVG Canvas */}
       <div className="relative mt-4 h-52 w-full overflow-hidden">
         <svg viewBox={`0 0 ${width} ${height}`} className="h-full w-full overflow-visible">
           <defs>
@@ -135,7 +137,6 @@ export function MorphingChartDemo() {
             </linearGradient>
           </defs>
 
-          {/* Grid lines */}
           {[0.25, 0.5, 0.75].map((ratio) => (
             <line
               key={ratio}
@@ -148,14 +149,12 @@ export function MorphingChartDemo() {
             />
           ))}
 
-          {/* Area fill */}
           <path
             d={areaD}
             fill="url(#morph-glow)"
             className="transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
           />
 
-          {/* Main stroke line */}
           <path
             d={curveD}
             fill="none"
@@ -165,7 +164,6 @@ export function MorphingChartDemo() {
             className="transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
           />
 
-          {/* Active tracker dot */}
           {hoveredPoint && (
             <g className="transition-transform duration-300 ease-out">
               <line
@@ -190,7 +188,6 @@ export function MorphingChartDemo() {
           )}
         </svg>
 
-        {/* Hover interaction overlay buttons */}
         <div className="absolute inset-0 flex justify-between px-6 pb-6 pt-6">
           {points.map((p, idx) => (
             <div
@@ -202,7 +199,6 @@ export function MorphingChartDemo() {
         </div>
       </div>
 
-      {/* Footer Readout */}
       <div className="mt-2 flex items-center justify-between border-t border-edge/[0.06] pt-3 text-[12.5px] text-ink-5">
         <span>{hoveredIdx !== null ? `Month ${hoveredIdx + 1}` : "Hover to inspect"}</span>
         <span className="font-mono font-medium text-ink">
@@ -214,7 +210,7 @@ export function MorphingChartDemo() {
 }
 
 // -------------------------------------------------------------
-// 2. Pillar Chart Demo (Cobalt lacquer, range pill, animated bars, dot tracker)
+// 2. Pillar Chart Demo
 // -------------------------------------------------------------
 export function PillarChartDemo() {
   const [rangeId, setRangeId] = useState<"week" | "month" | "year">("week");
@@ -282,7 +278,6 @@ export function PillarChartDemo() {
         boxShadow: "inset 0 1px 0 rgba(255,255,255,0.22), 0 20px 40px -15px rgba(15,23,42,0.6)",
       }}
     >
-      {/* Top bar: title + range radio toggle */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-1.5 text-[12.5px] font-medium text-white/90">
           <TrendingUp className="size-3.5 text-white/80" />
@@ -311,7 +306,6 @@ export function PillarChartDemo() {
         </div>
       </div>
 
-      {/* Metric Readout */}
       <div className="mt-3">
         <div className="flex items-center gap-2.5">
           <span className="text-[34px] font-normal leading-none tracking-[-0.03em] tabular-nums text-white">
@@ -327,7 +321,6 @@ export function PillarChartDemo() {
         </p>
       </div>
 
-      {/* Pillar Bars with animated fills */}
       <div className="relative mt-4 flex h-[148px] items-end justify-between gap-2.5">
         {currentRange.bars.map((bar, idx) => {
           const isBarSel = idx === activeIdx;
@@ -371,153 +364,26 @@ export function PillarChartDemo() {
 }
 
 // -------------------------------------------------------------
-// 3. Cookie Consent Demo
+// 3. Cookie Consent Demo (Authentic Hairline Cookie Monster banner + preferences card)
 // -------------------------------------------------------------
 export function CookieConsentDemo() {
-  const [analytics, setAnalytics] = useState(true);
-  const [marketing, setMarketing] = useState(false);
-  const [personalization, setPersonalization] = useState(true);
-  const [saved, setSaved] = useState(false);
-
-  const handleSave = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2400);
-  };
-
   return (
-    <div className="flex w-full max-w-[340px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="grid size-7 place-items-center rounded-lg bg-primary/10 text-primary">
-            <SlidersHorizontal className="size-4" />
-          </div>
-          <h4 className="text-[14.5px] font-semibold text-ink">Cookie preferences</h4>
-        </div>
-        {saved && (
-          <span className="flex items-center gap-1 text-[11.5px] font-medium text-primary">
-            <Check className="size-3" strokeWidth={3} /> Saved
-          </span>
-        )}
-      </div>
-
-      <p className="mt-2.5 text-[12.5px] leading-relaxed text-ink-5">
-        Manage how we use cookies to improve your experience and measure site performance.
-      </p>
-
-      <div className="mt-4 space-y-3 divide-y divide-edge/[0.05]">
-        {/* Essential */}
-        <div className="flex items-center justify-between pt-2 text-[13px]">
-          <div>
-            <p className="font-medium text-ink">Essential</p>
-            <p className="text-[11px] text-ink-6">Required for the site to function</p>
-          </div>
-          <span className="rounded-full bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-ink-5">
-            Always on
-          </span>
-        </div>
-
-        {/* Analytics */}
-        <div className="flex items-center justify-between pt-3 text-[13px]">
-          <div>
-            <p className="font-medium text-ink">Analytics</p>
-            <p className="text-[11px] text-ink-6">Anonymous usage metrics</p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={analytics}
-            onClick={() => setAnalytics(!analytics)}
-            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full p-0.5 transition-colors duration-200 ${
-              analytics ? "bg-primary" : "bg-surface-3"
-            }`}
-          >
-            <span
-              className={`inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                analytics ? "translate-x-4" : "translate-x-0"
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Marketing */}
-        <div className="flex items-center justify-between pt-3 text-[13px]">
-          <div>
-            <p className="font-medium text-ink">Marketing</p>
-            <p className="text-[11px] text-ink-6">Tailored partner offers</p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={marketing}
-            onClick={() => setMarketing(!marketing)}
-            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full p-0.5 transition-colors duration-200 ${
-              marketing ? "bg-primary" : "bg-surface-3"
-            }`}
-          >
-            <span
-              className={`inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                marketing ? "translate-x-4" : "translate-x-0"
-              }`}
-            />
-          </button>
-        </div>
-
-        {/* Personalization */}
-        <div className="flex items-center justify-between pt-3 text-[13px]">
-          <div>
-            <p className="font-medium text-ink">Personalization</p>
-            <p className="text-[11px] text-ink-6">Remember language and preferences</p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={personalization}
-            onClick={() => setPersonalization(!personalization)}
-            className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full p-0.5 transition-colors duration-200 ${
-              personalization ? "bg-primary" : "bg-surface-3"
-            }`}
-          >
-            <span
-              className={`inline-block size-4 rounded-full bg-white shadow-sm transition-transform duration-200 ${
-                personalization ? "translate-x-4" : "translate-x-0"
-              }`}
-            />
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-5 flex gap-2">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="flex-1 rounded-xl bg-surface-3 py-2 text-[12.5px] font-medium text-ink transition-colors hover:bg-surface-4"
-        >
-          Save preferences
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setAnalytics(true);
-            setMarketing(true);
-            setPersonalization(true);
-            handleSave();
-          }}
-          className="flex-1 rounded-xl bg-primary py-2 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
-        >
-          Accept all
-        </button>
-      </div>
+    <div className="flex w-full items-center justify-center py-2">
+      <CookieConsent
+        onSave={async (choices) => {
+          await new Promise((r) => setTimeout(r, 600));
+        }}
+      />
     </div>
   );
 }
 
 // -------------------------------------------------------------
-// 4. Activity Heatmap Demo (Matrix of orders / customers)
+// 4. Activity Heatmap Demo
 // -------------------------------------------------------------
 export function ActivityHeatmapDemo() {
   const [metric, setMetric] = useState<"orders" | "customers">("orders");
 
-  // Generate 7 rows x 28 cols of activity
   const weeks = 26;
   const days = 7;
   const grid = useMemo(() => {
@@ -572,7 +438,6 @@ export function ActivityHeatmapDemo() {
         </div>
       </div>
 
-      {/* Contribution Grid */}
       <div className="mt-5 overflow-x-auto pb-1">
         <div className="flex flex-col gap-1 min-w-[500px]">
           {grid.map((row, rIdx) => (
@@ -607,53 +472,26 @@ export function ActivityHeatmapDemo() {
 }
 
 // -------------------------------------------------------------
-// 5. Voice Bar Demo (Live audio waveform pill)
+// 5. Voice Bar Demo
 // -------------------------------------------------------------
+const VOICE_PHRASES = [
+  "Set a timer for ten minutes and remind me to check the roast",
+  "Draft a reply to Fernhill confirming Friday morning delivery",
+  "Summarise the three open blockers before the release review",
+];
+
+const ATTACHMENTS = ["launch-notes.md", "q4-metrics.csv", "voice-brief.pdf"];
+
 export function VoiceBarDemo() {
-  const [active, setActive] = useState(true);
-  const [speaking, setSpeaking] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSpeaking((prev) => !prev);
-    }, 2800);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <div className="flex w-full max-w-[540px] items-center justify-center">
-      <div className="flex h-12 w-full max-w-[420px] items-center justify-between rounded-full bg-surface px-4 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setActive(!active)}
-            className={`grid size-8 place-items-center rounded-full transition-colors ${
-              active ? "bg-primary text-white" : "bg-surface-3 text-ink-6"
-            }`}
-          >
-            {active ? <Mic className="size-4" /> : <MicOff className="size-4" />}
-          </button>
-
-          <span className="text-[13px] font-medium text-ink">
-            {active ? (speaking ? "Agent speaking..." : "Listening...") : "Muted"}
-          </span>
-        </div>
-
-        {/* Dynamic Equalizer Waveform */}
-        <div className="flex items-center gap-1">
-          {[16, 28, 12, 24, 32, 18, 26, 14, 30, 20].map((h, i) => (
-            <span
-              key={i}
-              className={`w-1 rounded-full transition-all duration-300 ${
-                active ? "bg-primary" : "bg-edge/20"
-              }`}
-              style={{
-                height: active && speaking ? `${(h * ((i % 3) + 1.2)) / 2}px` : "6px",
-              }}
-            />
-          ))}
-        </div>
-      </div>
+    <div className="flex w-full max-w-[560px] flex-col items-center justify-center p-2">
+      <VoiceBar
+        defaultValue="Draft a reply to Fernhill confirming Friday morning delivery"
+        placeholder="Draft a reply to Fernhill confirming Friday morning delivery"
+        onSubmit={async (prompt) => {
+          await new Promise((r) => setTimeout(r, 1200));
+        }}
+      />
     </div>
   );
 }
@@ -761,7 +599,6 @@ export function StreakChainDemo() {
         </span>
       </div>
 
-      {/* Week day bubbles */}
       <div className="mt-5 flex items-center justify-between gap-1.5">
         {days.map((day, idx) => {
           const isToday = idx === 4;
@@ -809,192 +646,206 @@ export function StreakChainDemo() {
 }
 
 // -------------------------------------------------------------
-// 8. Status Capsule Demo (Lock / Unlock production database)
+// 8. Status Capsule Demo
 // -------------------------------------------------------------
 export function StatusCapsuleDemo() {
-  const [locked, setLocked] = useState(true);
+  const [status, setStatus] = useState<"idle" | "working" | "done">("idle");
+  const [actionKind, setActionKind] = useState<"lock" | "unlock">("lock");
+  const [showLog, setShowLog] = useState(false);
+
+  const lockLog = [
+    { id: "a", label: "Front door locked", detail: "Deadbolt · just now", time: "11:02 PM" },
+    { id: "b", label: "Motion detected", detail: "Front porch", time: "10:45 PM" },
+    { id: "c", label: "Door sensor open", detail: "Front porch", time: "10:38 PM" },
+    { id: "d", label: "Unlocked with keypad", detail: "Entry pad", time: "6:14 PM" },
+  ];
+
+  const handleLock = () => {
+    setActionKind("lock");
+    setStatus("working");
+    setTimeout(() => {
+      setStatus("done");
+    }, 1200);
+  };
+
+  const handleUnlock = () => {
+    setActionKind("unlock");
+    setStatus("working");
+    setTimeout(() => {
+      setStatus("idle");
+    }, 1000);
+  };
+
+  const title =
+    status === "done"
+      ? "Front door locked"
+      : status === "working"
+      ? actionKind === "lock"
+        ? "Locking front door"
+        : "Unlocking front door"
+      : "Front door";
+
+  const subtitle =
+    status === "done"
+      ? "Deadbolt · just now"
+      : status === "working"
+      ? "Deadbolt · turning"
+      : "Unlocked · Entry pad";
 
   return (
     <div className="flex w-full max-w-[340px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <span
-            className={`size-2.5 rounded-full transition-colors ${
-              locked ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" : "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+            className={`grid size-8 place-items-center rounded-xl transition-colors ${
+              status === "done"
+                ? "bg-emerald-500/15 text-emerald-600"
+                : "bg-surface-3 text-ink-6"
             }`}
-          />
-          <span className="text-[14px] font-semibold text-ink">Production database</span>
+          >
+            {status === "done" ? <Lock className="size-4" /> : <Unlock className="size-4" />}
+          </span>
+          <div>
+            <h4 className="text-[14px] font-semibold text-ink">
+              <TextMorph>{title}</TextMorph>
+            </h4>
+            <p className="text-[11.5px] text-ink-6">
+              <TextMorph>{subtitle}</TextMorph>
+            </p>
+          </div>
         </div>
-        <span className="text-[11px] font-mono text-ink-6">eu-central-1</span>
+
+        <button
+          type="button"
+          disabled={status === "working"}
+          onClick={status === "done" ? handleUnlock : handleLock}
+          className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-[12.5px] font-medium transition-all ${
+            status === "done"
+              ? "bg-surface-3 text-ink hover:bg-surface-4"
+              : "bg-primary text-white hover:opacity-90"
+          }`}
+        >
+          {status === "working"
+            ? "Working..."
+            : status === "done"
+            ? "Unlock"
+            : "Lock"}
+        </button>
       </div>
 
-      <p className="mt-2 text-[12.5px] text-ink-5">
-        Zero-trust lock preventing schema alterations or drops during peak traffic hours.
-      </p>
+      <div className="mt-4 border-t border-edge/[0.06] pt-3">
+        <button
+          type="button"
+          onClick={() => setShowLog(!showLog)}
+          className="flex w-full items-center justify-between text-[12px] font-medium text-ink-5 hover:text-ink"
+        >
+          <span>Lock history</span>
+          <span className="text-[11px] text-ink-6 font-mono">{showLog ? "Hide" : "Show (4)"}</span>
+        </button>
 
-      <div className="mt-5 rounded-xl border border-edge/[0.06] bg-surface-2 p-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[13px]">
-            {locked ? (
-              <Lock className="size-4 text-emerald-500" />
-            ) : (
-              <Unlock className="size-4 text-amber-500" />
+        {showLog && (
+          <div className="mt-2.5 space-y-2 text-[11.5px]">
+            {lockLog.map((item) => (
+              <div key={item.id} className="flex items-center justify-between text-ink-5">
+                <div>
+                  <p className="font-medium text-ink">{item.label}</p>
+                  <p className="text-[10.5px] text-ink-6">{item.detail}</p>
+                </div>
+                <span className="font-mono text-ink-6">{item.time}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// -------------------------------------------------------------
+// 9. Afterglow Demo
+// -------------------------------------------------------------
+export function AfterglowDemo() {
+  const glowRef = useRef<AfterglowHandle>(null);
+  const [published, setPublished] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handlePublish = async () => {
+    if (loading) return;
+    setLoading(true);
+    await glowRef.current?.play(() => {
+      setPublished(true);
+    });
+    setLoading(false);
+    setTimeout(() => setPublished(false), 4000);
+  };
+
+  return (
+    <div className="flex w-full items-center justify-center p-2">
+      <Afterglow ref={glowRef}>
+        <div className="relative flex w-[320px] flex-col rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[12px] font-medium text-muted-foreground">Ready to publish</p>
+              <h4 className="text-[15px] font-semibold text-foreground">Gelato Summer Release 2026</h4>
+            </div>
+            {published && (
+              <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[11px] font-medium text-emerald-500">
+                Published
+              </span>
             )}
-            <span className="font-medium text-ink">
-              {locked ? "Locked against writes" : "Unlocked (Maintenance)"}
-            </span>
+          </div>
+
+          <div className="mt-4 space-y-2 text-[12.5px] text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-primary" />
+              <span>6 new seasonal flavours</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-primary" />
+              <span>Shop page & nutrition facts</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="size-1.5 rounded-full bg-primary" />
+              <span>Customer newsletter scheduled</span>
+            </div>
           </div>
 
           <button
             type="button"
-            onClick={() => setLocked(!locked)}
-            className={`rounded-lg px-2.5 py-1 text-[11.5px] font-medium transition-colors ${
-              locked
-                ? "bg-surface text-ink shadow-sm hover:bg-surface-3"
-                : "bg-emerald-500 text-white hover:opacity-90"
-            }`}
+            onClick={handlePublish}
+            disabled={loading}
+            className="mt-5 flex w-full cursor-pointer items-center justify-center rounded-xl bg-primary py-2.5 text-[13px] font-medium text-primary-foreground shadow-sm transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50"
           >
-            {locked ? "Unlock" : "Lock"}
+            {published ? "Release published" : "Publish release"}
           </button>
         </div>
-      </div>
+      </Afterglow>
     </div>
   );
 }
 
 // -------------------------------------------------------------
-// 9. Afterglow Demo ("Ready to publish" with success glow)
-// -------------------------------------------------------------
-export function AfterglowDemo() {
-  const [published, setPublished] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handlePublish = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setPublished(true);
-      setTimeout(() => setPublished(false), 3000);
-    }, 900);
-  };
-
-  return (
-    <div className="relative flex w-full max-w-[340px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-      <div className="flex items-center gap-2.5">
-        <div className="grid size-8 place-items-center rounded-full bg-primary/10 text-primary">
-          <Sparkles className="size-4" />
-        </div>
-        <div>
-          <h4 className="text-[14.5px] font-semibold text-ink">Ready to publish</h4>
-          <p className="text-[11.5px] text-ink-6">Gelato Summer Release 2026</p>
-        </div>
-      </div>
-
-      <div className="mt-4 space-y-2 text-[12.5px] text-ink-4">
-        <div className="flex items-center gap-2">
-          <Check className="size-3.5 text-primary" strokeWidth={3} />
-          <span>6 new seasonal flavours</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Check className="size-3.5 text-primary" strokeWidth={3} />
-          <span>Shop page & nutrition facts</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Check className="size-3.5 text-primary" strokeWidth={3} />
-          <span>Customer newsletter scheduled</span>
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={handlePublish}
-        disabled={loading}
-        className={`relative mt-5 flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-2.5 text-[13px] font-medium text-white transition-all ${
-          published
-            ? "bg-emerald-500 shadow-[0_0_24px_rgba(16,185,129,0.5)]"
-            : "bg-primary shadow-sm hover:opacity-90 active:scale-[0.98]"
-        }`}
-      >
-        {loading ? (
-          "Publishing..."
-        ) : published ? (
-          <>
-            <Check className="size-4" strokeWidth={3} />
-            Published live!
-          </>
-        ) : (
-          "Publish release"
-        )}
-      </button>
-    </div>
-  );
-}
-
-// -------------------------------------------------------------
-// 10. Snowfall Demo (Canvas gentle snow particles)
+// 10. Snowfall Demo
 // -------------------------------------------------------------
 export function SnowfallDemo() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let width = (canvas.width = canvas.offsetWidth);
-    let height = (canvas.height = canvas.offsetHeight);
-
-    const flakes: Array<{ x: number; y: number; r: number; vy: number; vx: number; alpha: number }> = [];
-    for (let i = 0; i < 35; i++) {
-      flakes.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        r: Math.random() * 1.8 + 0.8,
-        vy: Math.random() * 0.8 + 0.4,
-        vx: (Math.random() - 0.5) * 0.3,
-        alpha: Math.random() * 0.6 + 0.3,
-      });
-    }
-
-    let animId: number;
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-      ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
-
-      for (const f of flakes) {
-        f.y += f.vy;
-        f.x += f.vx;
-        if (f.y > height) {
-          f.y = -5;
-          f.x = Math.random() * width;
-        }
-        ctx.beginPath();
-        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${f.alpha})`;
-        ctx.fill();
-      }
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
-    return () => cancelAnimationFrame(animId);
-  }, []);
-
   return (
-    <div className="relative flex h-full min-h-[220px] w-full max-w-[340px] items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-b from-surface to-surface-2 p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.06)]">
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 size-full" />
-      <div className="relative z-10 flex flex-col items-center text-center">
-        <div className="grid size-12 place-items-center rounded-2xl bg-surface-3 shadow-md">
-          <svg className="size-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L15 8H9L12 2Z" />
-            <path d="M12 22L9 16H15L12 22Z" />
-            <path d="M2 12L8 9V15L2 12Z" />
-            <path d="M22 12L16 15V9L22 12Z" />
-          </svg>
-        </div>
-        <p className="mt-3 text-[13.5px] font-medium text-ink">Winter Snowfall</p>
-        <p className="text-[11px] text-ink-6">Gentle canvas particles</p>
+    <div className="flex w-full items-center justify-center p-2">
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card/60 p-6 sm:p-8 shadow-sm">
+        <Snowfall intensity={1} keepFalling shake>
+          <div className="flex cursor-pointer select-none flex-col items-center justify-center gap-2 rounded-2xl bg-surface-2 p-6 shadow-sm transition-transform active:scale-95">
+            <svg
+              className="size-14 text-foreground"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14" strokeLinecap="round" />
+            </svg>
+            <span className="text-[13px] font-medium text-foreground">Winter Snowfall</span>
+            <span className="text-[11px] text-muted-foreground">Tap to shake</span>
+          </div>
+        </Snowfall>
       </div>
     </div>
   );
@@ -1004,13 +855,15 @@ export function SnowfallDemo() {
 // 11. Add To Cart Demo
 // -------------------------------------------------------------
 export function AddToCartDemo() {
-  const [count, setCount] = useState(1);
-  const [animating, setAnimating] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
+  const [added, setAdded] = useState(false);
 
-  const handleAdd = () => {
-    setAnimating(true);
-    setCount((c) => c + 1);
-    setTimeout(() => setAnimating(false), 500);
+  const handleAddToCart = () => {
+    setAdded(true);
+    setCartCount((c) => c + 1);
+    setTimeout(() => {
+      setAdded(false);
+    }, 1600);
   };
 
   return (
@@ -1019,30 +872,35 @@ export function AddToCartDemo() {
         <span className="text-[11.5px] font-medium uppercase tracking-wider text-ink-6">Featured</span>
         <div className="relative flex items-center">
           <ShoppingBag className="size-4 text-ink-4" />
-          <span
-            className={`ml-1.5 grid size-5 place-items-center rounded-full bg-primary text-[10px] font-semibold text-white transition-transform ${
-              animating ? "scale-125" : "scale-100"
-            }`}
-          >
-            {count}
+          <span className="ml-1.5 grid size-5 place-items-center rounded-full bg-primary text-[10.5px] font-semibold text-white">
+            <NumberRoll value={cartCount} />
           </span>
         </div>
       </div>
 
-      <div className="mt-4 flex aspect-[4/3] items-center justify-center rounded-xl bg-surface-2 p-4">
-        <div className="text-center">
-          <p className="text-[15px] font-medium text-ink">Dune Lounge Chair</p>
-          <p className="mt-1 font-mono text-[13px] text-ink-5">$890.00</p>
+      <div className="mt-4 aspect-square overflow-hidden rounded-[18px] bg-muted shadow-inner">
+        <img
+          src="/ui-assets/delete-undo/chair.webp"
+          alt="Dune lounge chair in terracotta bouclé"
+          className="size-full object-cover"
+          draggable={false}
+        />
+      </div>
+
+      <div className="mt-3 flex items-baseline justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate text-[14px] font-medium text-ink">Dune lounge chair</p>
+          <p className="text-[12.5px] text-ink-6">Terracotta bouclé</p>
         </div>
+        <p className="text-[14px] font-medium tabular-nums text-ink">$1,240</p>
       </div>
 
       <button
         type="button"
-        onClick={handleAdd}
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-[13px] font-medium text-white shadow-sm transition-transform hover:opacity-90 active:scale-[0.98]"
+        onClick={handleAddToCart}
+        className="mt-4 flex h-10 w-full cursor-pointer items-center justify-center rounded-full bg-ink text-[13.5px] font-medium text-surface shadow-sm transition-transform hover:opacity-90 active:scale-[0.98]"
       >
-        <ShoppingBag className="size-4" />
-        Add to cart
+        <TextMorph>{added ? "Added to cart" : "Add to cart"}</TextMorph>
       </button>
     </div>
   );
@@ -1083,7 +941,7 @@ export function LiveLineChartDemo() {
       <div className="flex items-center justify-between">
         <div>
           <p className="text-[12px] font-medium text-ink-5">Relay API · requests</p>
-          <p className="text-[20px] font-semibold tracking-tight text-ink tabular-nums">
+          <p className="text-[20px] font-semibold tracking-tight text-ink tabular-nums select-none">
             <NumberRoll value={currentVal} suffix=" req/s" />
           </p>
         </div>
@@ -1119,59 +977,60 @@ export function LiveLineChartDemo() {
 // -------------------------------------------------------------
 // 13. Task Card Demo
 // -------------------------------------------------------------
-export function TaskCardDemo() {
-  const [tasks, setTasks] = useState([
-    { id: 1, text: "Audit landing page typography", done: true, tag: "Design" },
-    { id: 2, text: "Hook up Stripe webhook handler", done: false, tag: "API" },
-    { id: 3, text: "Benchmark CSS paint & LCP score", done: false, tag: "Perf" },
-  ]);
+const INITIAL_TASK_LISTS: TaskList[] = [
+  {
+    id: "sprint",
+    title: "Sprint backlog",
+    color: ["var(--chart-1, #3b82f6)", "var(--chart-2, #8b5cf6)"],
+    href: "#",
+    linkLabel: "View all",
+    tasks: [
+      { id: "task-1", label: "Audit landing page typography", done: true, due: "Design" },
+      { id: "task-2", label: "Hook up Stripe webhook handler", done: false, due: "API" },
+      { id: "task-3", label: "Benchmark CSS paint & LCP score", done: false, due: "Perf" },
+    ],
+  },
+];
 
-  const toggle = (id: number) => {
-    setTasks((list) =>
-      list.map((t) => (t.id === id ? { ...t, done: !t.done } : t))
+export function TaskCardDemo() {
+  const [lists, setLists] = useState<TaskList[]>(INITIAL_TASK_LISTS);
+
+  const handleToggle = (listId: string, taskId: string, done: boolean) => {
+    setLists((prev) =>
+      prev.map((l) =>
+        l.id === listId
+          ? {
+              ...l,
+              tasks: l.tasks.map((t) => (t.id === taskId ? { ...t, done } : t)),
+            }
+          : l
+      )
+    );
+  };
+
+  const handleAdd = (listId: string, label: string) => {
+    setLists((prev) =>
+      prev.map((l) =>
+        l.id === listId
+          ? {
+              ...l,
+              tasks: [
+                ...l.tasks,
+                { id: String(Date.now()), label, done: false, due: "Task" },
+              ],
+            }
+          : l
+      )
     );
   };
 
   return (
-    <div className="flex w-full max-w-[340px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-      <div className="flex items-center justify-between">
-        <h4 className="text-[14px] font-semibold text-ink">Sprint backlog</h4>
-        <span className="text-[11px] font-mono text-ink-6">
-          {tasks.filter((t) => t.done).length}/{tasks.length} done
-        </span>
-      </div>
-
-      <div className="mt-3 space-y-2">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            onClick={() => toggle(task.id)}
-            className="flex cursor-pointer items-center justify-between rounded-xl bg-surface-2 p-2.5 transition-colors hover:bg-surface-3"
-          >
-            <div className="flex items-center gap-2.5">
-              <span
-                className={`grid size-4 place-items-center rounded border transition-colors ${
-                  task.done
-                    ? "border-primary bg-primary text-white"
-                    : "border-edge/40 bg-surface"
-                }`}
-              >
-                {task.done && <Check className="size-3" strokeWidth={3} />}
-              </span>
-              <span
-                className={`text-[12.5px] transition-colors ${
-                  task.done ? "text-ink-6 line-through" : "text-ink"
-                }`}
-              >
-                {task.text}
-              </span>
-            </div>
-            <span className="rounded bg-surface-3 px-1.5 py-0.5 text-[10px] font-medium text-ink-5">
-              {task.tag}
-            </span>
-          </div>
-        ))}
-      </div>
+    <div className="flex w-full items-center justify-center p-2">
+      <TaskCard
+        lists={lists}
+        onToggle={handleToggle}
+        onAdd={handleAdd}
+      />
     </div>
   );
 }
@@ -1179,189 +1038,142 @@ export function TaskCardDemo() {
 // -------------------------------------------------------------
 // 14. Variant Pick Demo
 // -------------------------------------------------------------
+const VARIANT_IMAGES = [
+  { id: "coast", src: "/ui-assets/delete-undo/coast.webp", label: "Coast" },
+  { id: "lake", src: "/ui-assets/delete-undo/lake.webp", label: "Lake" },
+  { id: "runner", src: "/ui-assets/delete-undo/runner.webp", label: "Runner" },
+  { id: "oranges", src: "/ui-assets/delete-undo/oranges.webp", label: "Oranges" },
+];
+
 export function VariantPickDemo() {
-  const [selected, setSelected] = useState(0);
-  const variants = [
-    { name: "Nordic Oak", color: "#d97706" },
-    { name: "Smoked Walnut", color: "#78350f" },
-    { name: "Matte Black", color: "#18181b" },
-    { name: "Alabaster White", color: "#f4f4f5" },
-  ];
+  const [selectedId, setSelectedId] = useState("coast");
+  const selectedImage = VARIANT_IMAGES.find((img) => img.id === selectedId) ?? VARIANT_IMAGES[0];
 
   return (
     <div className="flex w-full max-w-[340px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
       <div className="flex items-center justify-between">
-        <h4 className="text-[14px] font-semibold text-ink">Finish variant</h4>
+        <h4 className="text-[14px] font-semibold text-ink">Photo variant</h4>
         <span className="text-[12px] font-medium text-primary">
-          {variants[selected].name}
+          <TextMorph>{selectedImage.label}</TextMorph>
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-4 gap-2">
-        {variants.map((v, i) => (
-          <button
-            key={v.name}
-            type="button"
-            onClick={() => setSelected(i)}
-            className={`aspect-square rounded-xl p-1 transition-all ${
-              selected === i
-                ? "ring-2 ring-primary ring-offset-2 ring-offset-surface"
-                : "opacity-75 hover:opacity-100"
-            }`}
-          >
-            <span
-              className="block size-full rounded-lg shadow-inner"
-              style={{ backgroundColor: v.color }}
-            />
-          </button>
-        ))}
+      <div className="mt-4 aspect-[4/3] overflow-hidden rounded-xl bg-surface-2 shadow-inner">
+        <img
+          src={selectedImage.src}
+          alt={selectedImage.label}
+          className="size-full object-cover transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          draggable={false}
+        />
+      </div>
+
+      <div className="mt-3 grid grid-cols-4 gap-2">
+        {VARIANT_IMAGES.map((img) => {
+          const isSel = img.id === selectedId;
+          return (
+            <button
+              key={img.id}
+              type="button"
+              onClick={() => setSelectedId(img.id)}
+              className={`aspect-square overflow-hidden rounded-lg p-0.5 transition-all ${
+                isSel
+                  ? "ring-2 ring-primary ring-offset-2 ring-offset-surface"
+                  : "opacity-60 hover:opacity-100"
+              }`}
+            >
+              <img
+                src={img.src}
+                alt={img.label}
+                className="size-full rounded object-cover"
+                draggable={false}
+              />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
 }
 
 // -------------------------------------------------------------
-// 15. Activity Rings Demo
+// 15. Activity Rings Demo (Authentic Business metrics: Orders, Revenue, Regulars + 7-Day Picker)
 // -------------------------------------------------------------
+const GOALS = [
+  { id: "orders", label: "Orders", goal: 120, format: { maximumFractionDigits: 0 } },
+  { id: "revenue", label: "Revenue", goal: 1200, format: { style: "currency", currency: "USD", maximumFractionDigits: 0 } },
+  { id: "regulars", label: "Regulars back", goal: 15, format: { maximumFractionDigits: 0 } },
+];
+
+const RING_COLORS = [
+  "var(--chart-1, var(--primary))",
+  "#e8743b",
+  "#1baf7a",
+];
+
+const DAYS_DATA = [
+  { key: "mon", label: "M", title: "Monday 5 October", values: [131, 1284, 17] },
+  { key: "tue", label: "T", title: "Tuesday 6 October", values: [98, 912, 11] },
+  { key: "wed", label: "W", title: "Wednesday 7 October", values: [142, 1466, 21] },
+  { key: "thu", label: "T", title: "Thursday 8 October", values: [87, 845, 9] },
+  { key: "fri", label: "F", title: "Friday 9 October", values: [128, 1340, 18] },
+  { key: "sat", label: "S", title: "Saturday 10 October", values: [93, 940, 12] },
+  { key: "sun", label: "S", title: "Sunday 11 October", values: [64, 620, 8] },
+];
+
+const ACTIVITY_GOALS: RingGoal[] = [
+  { id: "orders", label: "Orders", goal: 120 },
+  { id: "revenue", label: "Revenue", goal: 1200, format: { style: "currency" as const, currency: "USD", maximumFractionDigits: 0 } },
+  { id: "regulars", label: "Regulars back", goal: 15 },
+];
+
+const ACTIVITY_DAYS: RingDay[] = [
+  { key: "mon", label: "M", title: "Monday 5 October", values: [85, 820, 10] },
+  { key: "tue", label: "T", title: "Tuesday 6 October", values: [110, 1050, 14] },
+  { key: "wed", label: "W", title: "Wednesday 7 October", values: [95, 910, 11] },
+  { key: "thu", label: "T", title: "Thursday 8 October", values: [130, 1340, 16] },
+  { key: "fri", label: "F", title: "Friday 9 October", values: [142, 1480, 18] },
+  { key: "sat", label: "S", title: "Saturday 10 October", values: [null, null, null] },
+  { key: "sun", label: "S", title: "Sunday 11 October", values: [null, null, null] },
+];
+
 export function ActivityRingsDemo() {
   return (
-    <div className="flex w-full max-w-[400px] items-center justify-between rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-      {/* Concentric SVG Rings */}
-      <div className="relative size-32">
-        <svg viewBox="0 0 100 100" className="size-full -rotate-90">
-          {/* Ring 1 - Red */}
-          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(239, 68, 68, 0.2)" strokeWidth="7" />
-          <circle
-            cx="50"
-            cy="50"
-            r="42"
-            fill="none"
-            stroke="#ef4444"
-            strokeWidth="7"
-            strokeDasharray="264"
-            strokeDashoffset="65"
-            strokeLinecap="round"
-          />
-
-          {/* Ring 2 - Green */}
-          <circle cx="50" cy="50" r="32" fill="none" stroke="rgba(34, 197, 94, 0.2)" strokeWidth="7" />
-          <circle
-            cx="50"
-            cy="50"
-            r="32"
-            fill="none"
-            stroke="#22c55e"
-            strokeWidth="7"
-            strokeDasharray="201"
-            strokeDashoffset="45"
-            strokeLinecap="round"
-          />
-
-          {/* Ring 3 - Cyan */}
-          <circle cx="50" cy="50" r="22" fill="none" stroke="rgba(6, 182, 212, 0.2)" strokeWidth="7" />
-          <circle
-            cx="50"
-            cy="50"
-            r="22"
-            fill="none"
-            stroke="#06b6d4"
-            strokeWidth="7"
-            strokeDasharray="138"
-            strokeDashoffset="28"
-            strokeLinecap="round"
-          />
-        </svg>
-      </div>
-
-      <div className="space-y-2 text-[12.5px]">
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-red-500" />
-          <span className="text-ink-5">Move:</span>
-          <span className="font-semibold text-ink">540 / 600 kcal</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-emerald-500" />
-          <span className="text-ink-5">Exercise:</span>
-          <span className="font-semibold text-ink">38 / 30 mins</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="size-2.5 rounded-full bg-cyan-500" />
-          <span className="text-ink-5">Stand:</span>
-          <span className="font-semibold text-ink">10 / 12 hrs</span>
-        </div>
-      </div>
+    <div className="flex w-full items-center justify-center py-2">
+      <ActivityRings goals={ACTIVITY_GOALS} days={ACTIVITY_DAYS} defaultValue="fri" locales="en-US" />
     </div>
   );
 }
 
 // -------------------------------------------------------------
-// 16. Storage Demo
+// 16. Storage Demo (Authentic Hairline Duffel Bag Illustration + storage meter)
 // -------------------------------------------------------------
-export function StorageDemo() {
-  const [used, setUsed] = useState(47.2);
-  const [trashCleaned, setTrashCleaned] = useState(false);
+const STORAGE_KINDS: StorageKind[] = [
+  { id: "photos", label: "Photos", bytes: 19.8 * 1024 * 1024 * 1024, color: "var(--chart-1, #3b82f6)" },
+  { id: "video", label: "Video", bytes: 15.5 * 1024 * 1024 * 1024, color: "var(--chart-2, #8b5cf6)" },
+  { id: "docs", label: "Docs", bytes: 11.9 * 1024 * 1024 * 1024, color: "var(--chart-3, #10b981)" },
+];
 
-  const cleanTrash = () => {
-    if (!trashCleaned) {
-      setUsed((u) => Math.max(10, u - 9.1));
-      setTrashCleaned(true);
-    }
-  };
+export function StorageDemo() {
+  const [used, setUsed] = useState(47.2 * 1024 * 1024 * 1024);
+  const [limit, setLimit] = useState(50 * 1024 * 1024 * 1024);
 
   return (
-    <div className="flex w-full max-w-[420px] flex-col rounded-2xl bg-surface p-5 shadow-[var(--plate-shadow),0_0_0_1px_rgb(var(--edge-rgb)/0.08)]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <HardDrive className="size-4 text-primary" />
-          <h4 className="text-[14px] font-semibold text-ink">Cloud storage</h4>
-        </div>
-        <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[11px] font-semibold text-amber-500">
-          Nearly full
-        </span>
-      </div>
-
-      <div className="mt-3">
-        <p className="text-[18px] font-semibold text-ink tabular-nums">
-          <NumberRoll value={used} format={{ maximumFractionDigits: 1 }} suffix=" GB" />
-          <span className="text-[13px] font-normal text-ink-6"> of 50 GB used</span>
-        </p>
-
-        {/* Multi-color Segment Bar */}
-        <div className="mt-2.5 flex h-2.5 w-full overflow-hidden rounded-full bg-surface-3">
-          <span style={{ width: "42%" }} className="bg-cyan-500" />
-          <span style={{ width: "33%" }} className="bg-purple-500" />
-          <span style={{ width: "19%" }} className="bg-amber-500" />
-        </div>
-      </div>
-
-      <div className="mt-4 flex flex-wrap gap-4 text-[11.5px] text-ink-5">
-        <div className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-cyan-500" /> Photos (19.8 GB)
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-purple-500" /> Video (15.5 GB)
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="size-2 rounded-full bg-amber-500" /> Docs (11.9 GB)
-        </div>
-      </div>
-
-      <div className="mt-5 flex gap-2">
-        <button
-          type="button"
-          disabled={trashCleaned}
-          onClick={cleanTrash}
-          className="flex-1 rounded-xl bg-surface-3 py-2 text-[12px] font-medium text-ink transition-colors hover:bg-surface-4 disabled:opacity-50"
-        >
-          {trashCleaned ? "Trash is empty" : "Empty trash (-9.1 GB)"}
-        </button>
-        <button
-          type="button"
-          className="flex-1 rounded-xl bg-primary py-2 text-[12px] font-medium text-white transition-opacity hover:opacity-90"
-        >
-          Upgrade to 1 TB
-        </button>
-      </div>
+    <div className="flex w-full items-center justify-center py-2">
+      <Storage
+        used={used}
+        limit={limit}
+        kinds={STORAGE_KINDS}
+        cleanUpLabel="Empty trash (-9.1 GB)"
+        onCleanUp={async () => {
+          await new Promise((r) => setTimeout(r, 700));
+          setUsed((u) => Math.max(10 * 1024 * 1024 * 1024, u - 9.1 * 1024 * 1024 * 1024));
+        }}
+        upgradeLabel="Upgrade to 1 TB"
+        onUpgrade={async () => {
+          await new Promise((r) => setTimeout(r, 700));
+          setLimit(1000 * 1024 * 1024 * 1024);
+        }}
+      />
     </div>
   );
 }

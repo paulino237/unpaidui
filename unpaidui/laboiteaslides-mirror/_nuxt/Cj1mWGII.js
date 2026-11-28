@@ -1,0 +1,2 @@
+//# allFunctionsCalledOnLoad
+import{K as e,Y as t,p as n,ut as r}from"#entry";var i={},a={class:`triangleMirror`,role:`presentation`,"aria-hidden":`true`,width:`32`,height:`32`,viewBox:`0 0 32 32`,fill:`currentColor`,xmlns:`http://www.w3.org/2000/svg`};function o(n,i){return r(),t(`svg`,a,[...i[0]||=[e(`path`,{d:`M32 16L16 6.99382e-07L16 16L32 16Z`},null,-1),e(`path`,{d:`M16 16L3.49691e-06 16L16 32L16 16Z`},null,-1)]])}var s=Object.assign(n(i,[[`render`,o]]),{__name:`UIIconTriangleMirror`});export{s as t};
